@@ -1,0 +1,10 @@
+{
+  "build": {
+    "nixpacks": {
+      "plan": {
+        "language": "python"
+      }
+    }
+  },
+  "start": "python3 deeptrade_bot.py"
+}
