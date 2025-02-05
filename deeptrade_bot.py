@@ -1,5 +1,6 @@
 import os
 import telebot
+from openai import OpenAI  # Nouvelle structure OpenAI v1.61.1
 import openai
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 
@@ -95,16 +96,10 @@ def ai_response(message):
             model="gpt-3.5-turbo",
             messages=[{"role": "user", "content": user_input}]
         )
-        bot.reply_to(message, response["choices"][0]["message"]["content"])
-    except openai.error.InvalidRequestError:
-        bot.reply_to(message, "❌ Requête invalide, reformule ta question.")
-    except openai.error.RateLimitError:
-        bot.reply_to(message, "❌ Trop de requêtes, réessaie plus tard.")
-    except openai.error.AuthenticationError:
-        bot.reply_to(message, "❌ Clé API invalide. Vérifie la configuration.")
-    except Exception as e:
-        bot.reply_to(message, "❌ Erreur avec OpenAI, réessaie plus tard !")
-        print("Erreur OpenAI :", e)
+        bot.reply_to(message, response.choices[0].message["content"])
+    except openai.OpenAIError as e:
+        bot.reply_to(message, f"❌ Erreur avec OpenAI : {str(e)}")
+        print(f"Erreur OpenAI : {e}")
 
 # 📌 Lancer le bot en continu
 if __name__ == "__main__":
