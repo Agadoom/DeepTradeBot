@@ -1,31 +1,23 @@
-import os
 import telebot
 import openai
-from openai import OpenAI  # Nouvelle structure OpenAI v1.61.1
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 
-# 🔑 Chargement des variables d’environnement (Remplace-les par tes vraies valeurs)
-API_TOKEN = os.getenv("TELEGRAM_API_TOKEN")  # Token de ton bot Telegram
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")  # Clé API OpenAI
+# 🔑 Clés API
+API_TOKEN = "TON_TOKEN_TELEGRAM"
+OPENAI_API_KEY = "TA_CLE_OPENAI"
+openai.api_key = OPENAI_API_KEY
 
-# Vérification des clés API
-if not API_TOKEN or not OPENAI_API_KEY:
-    raise ValueError("❌ Erreur : TELEGRAM_API_TOKEN ou OPENAI_API_KEY manquant !")
-
-# 🔥 Initialisation des API
+# 🔥 Initialisation du bot
 bot = telebot.TeleBot(API_TOKEN)
-client = OpenAI(api_key=OPENAI_API_KEY)
 
-# 📌 Commande /start (Message de bienvenue avec boutons)
+# ✅ 📌 **Commande /start** : Accueil interactif avec DeepTrade Hub
 @bot.message_handler(commands=['start'])
 def send_welcome(message):
-    print(f"✅ Commande /start reçue de {message.chat.id}")
-
     keyboard = InlineKeyboardMarkup()
-    
-    # Bouton vers DeepTrade
-    deeptrade_button = InlineKeyboardButton("🌐 Accéder à DeepTrade", url="https://deeptrade.bio.link")
-    keyboard.add(deeptrade_button)
+
+    # Bouton d’accès au DeepTrade Hub
+    deeptrade_hub = InlineKeyboardButton("🌐 Accéder à DeepTrade Hub", url="https://deeptrade.bio.link")
+    keyboard.add(deeptrade_hub)
 
     # Autres boutons interactifs
     keyboard.add(
@@ -34,74 +26,64 @@ def send_welcome(message):
     )
     keyboard.add(
         InlineKeyboardButton("💰 Parrainage", callback_data="parrainage"),
-        InlineKeyboardButton("📊 Gains", callback_data="gains")
+        InlineKeyboardButton("📊 Investissements", callback_data="invest")
     )
 
-    # Envoi de l’image avec message
-    image_path = "A_futuristic_and_professional_landing_page_preview.png"
-    if os.path.exists(image_path):
-        with open(image_path, "rb") as photo:
-            bot.send_photo(
-                message.chat.id, 
-                photo, 
-                caption="🚀 **Bienvenue sur DeepTrade !**\n\n"
-                        "📊 L'IA et la finance au service de tes gains passifs 💰\n"
-                        "Clique sur un bouton ci-dessous pour commencer 👇",
-                reply_markup=keyboard
-            )
-    else:
-        bot.send_message(
-            message.chat.id,
-            "🚀 **Bienvenue sur DeepTrade !**\n\n"
-            "📊 L'IA et la finance au service de tes gains passifs 💰\n"
-            "Clique sur un bouton ci-dessous pour commencer 👇",
+    # Envoi de l’image de présentation
+    with open("deeptrade_hub_banner.png", "rb") as photo:
+        bot.send_photo(
+            message.chat.id, 
+            photo, 
+            caption="🚀 **Bienvenue sur DeepTrade Hub !**\n\n"
+                    "📊 L'IA et la finance au service de tes gains passifs 💰\n"
+                    "Clique sur un bouton ci-dessous pour explorer 👇",
             reply_markup=keyboard
         )
 
-# 📌 Gestion des boutons interactifs
+# 🎯 **Gestion des réponses des boutons interactifs**
 @bot.callback_query_handler(func=lambda call: True)
 def handle_query(call):
-    responses = {
-        "inscription": "📝 **Comment s’inscrire ?**\n\n"
-                       "1️⃣ Clique ici ➡️ [deeptrade.bio.link](https://deeptrade.bio.link)\n"
-                       "2️⃣ Remplis le formulaire et valide ton inscription.\n"
-                       "3️⃣ Accède aux offres et commence à gagner ! 🚀",
-        "faq": "❓ **FAQ DeepTrade** ❓\n\n"
-               "📌 **Comment commencer ?**\n➡️ Inscris-toi ici : [deeptrade.bio.link](https://deeptrade.bio.link)\n\n"
-               "📌 **Comment fonctionne le parrainage ?**\n➡️ Chaque inscription avec ton lien te rapporte une commission.\n\n"
-               "📌 **Quels sont les gains possibles ?**\n➡️ Jusqu'à 220€ offerts aux nouveaux utilisateurs.",
-        "parrainage": "🔗 **Programme de Parrainage DeepTrade** 🔗\n\n"
-                      "📌 **Tu veux gagner encore plus ?** Partage ton lien et touche des commissions sur chaque nouvelle inscription !\n\n"
-                      "📌 **Comment ça marche ?**\n"
-                      "1️⃣ Inscris-toi ici ➡️ [deeptrade.bio.link](https://deeptrade.bio.link)\n"
-                      "2️⃣ Obtiens ton lien de parrainage dans ton compte.\n"
-                      "3️⃣ Partage-le partout et regarde tes gains exploser !\n\n"
-                      "🔥 Plus tu invites, plus tu gagnes ! 🔥",
-        "gains": "💰 **Gagne jusqu'à 220€ avec DeepTrade !** 💰\n\n"
-                 "📌 1. Inscris-toi ici ➡️ [deeptrade.bio.link](https://deeptrade.bio.link)\n"
-                 "📌 2. Active ton compte et découvre les bonus.\n"
-                 "📌 3. Parraine et touche des commissions à chaque inscription.\n\n"
-                 "🔥 Plus tu invites, plus tu gagnes ! 🔥"
-    }
-    
-    if call.data in responses:
-        bot.send_message(call.message.chat.id, responses[call.data])
+    if call.data == "inscription":
+        bot.send_message(call.message.chat.id, "📝 **Comment s’inscrire ?**\n\n"
+                                               "1️⃣ Clique ici ➡️ [DeepTrade Hub](https://deeptrade.bio.link)\n"
+                                               "2️⃣ Remplis le formulaire et valide ton inscription.\n"
+                                               "3️⃣ Accède aux offres et commence à gagner ! 🚀")
+    elif call.data == "faq":
+        bot.send_message(call.message.chat.id, "❓ **FAQ DeepTrade** ❓\n\n"
+                                               "📌 **Comment commencer ?**\n➡️ Inscris-toi ici : [DeepTrade Hub](https://deeptrade.bio.link)\n\n"
+                                               "📌 **Comment fonctionne le parrainage ?**\n➡️ Chaque inscription avec ton lien te rapporte une commission.\n\n"
+                                               "📌 **Quels sont les gains possibles ?**\n➡️ Jusqu'à 220€ offerts aux nouveaux utilisateurs.")
+    elif call.data == "parrainage":
+        bot.send_message(call.message.chat.id, "🔗 **Programme de Parrainage DeepTrade** 🔗\n\n"
+                                               "📌 **Tu veux gagner encore plus ?** Partage ton lien et touche des commissions sur chaque nouvelle inscription !\n\n"
+                                               "📌 **Comment ça marche ?**\n"
+                                               "1️⃣ Inscris-toi ici ➡️ [DeepTrade Hub](https://deeptrade.bio.link)\n"
+                                               "2️⃣ Obtiens ton lien de parrainage dans ton compte.\n"
+                                               "3️⃣ Partage-le partout et regarde tes gains exploser !\n\n"
+                                               "🔥 Plus tu invites, plus tu gagnes ! 🔥")
+    elif call.data == "invest":
+        bot.send_message(call.message.chat.id, "📊 **Investissements DeepTrade** 💰\n\n"
+                                               "📌 **Envie d’investir intelligemment avec l’IA ?**\n"
+                                               "➡️ Découvre les opportunités ici : [DeepTrade Hub](https://deeptrade.bio.link)\n\n"
+                                               "📌 **Pourquoi investir ?**\n"
+                                               "- 🔥 Profite des analyses prédictives avancées\n"
+                                               "- 💰 Génère des revenus passifs\n"
+                                               "- 🚀 Rentre dans le game avant tout le monde !")
 
-# 📌 Fonction d'IA OpenAI pour répondre aux messages
+# 🤖 **Réponse de l’IA OpenAI pour toutes les autres questions**
 @bot.message_handler(func=lambda message: True)
 def ai_response(message):
     try:
         user_input = message.text
-        response = client.chat.completions.create(
-            model="gpt-3.5-turbo",
+        response = openai.ChatCompletion.create(
+            model="gpt-4-turbo",
             messages=[{"role": "user", "content": user_input}]
         )
-        bot.reply_to(message, response.choices[0].message.content)
-    except openai.OpenAIError as e:
-        bot.reply_to(message, f"❌ Erreur avec OpenAI : {str(e)}")
-        print(f"Erreur OpenAI : {e}")
+        bot.reply_to(message, response["choices"][0]["message"]["content"])
+    except Exception as e:
+        bot.reply_to(message, "❌ Erreur avec OpenAI, réessaie plus tard !")
+        print(e)  # Debug
 
-# 📌 Lancer le bot en continu
-if __name__ == "__main__":
-    print("✅ DeepTrade Bot en ligne !")
-    bot.polling(none_stop=True, interval=0, timeout=20)
+# 📌 **Lancement du bot**
+print("✅ DeepTrade Hub Bot en ligne !")
+bot.polling(none_stop=True, interval=0, timeout=20)
