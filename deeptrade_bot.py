@@ -1,6 +1,7 @@
 import telebot
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 import openai
+from openai import OpenAI
 
 # 🔑 Clés API (Remplace avec tes vraies clés)
 API_TOKEN = "7376769587:AAGGT6n40XaMVk4OP1FpDEQYRyHVJRRgF6c"  # Token Telegram de @BotFather
@@ -70,10 +71,11 @@ def handle_query(call):
 def ai_response(message):
     try:
         user_input = message.text
-        response = openai.ChatCompletion.create(
-            model="gpt-4",
-            messages=[{"role": "user", "content": user_input}]
-        )
+        client = openai.OpenAI(api_key=OPENAI_API_KEY)
+response = client.chat.completions.create(
+    model="gpt-3.5-turbo",
+    messages=[{"role": "user", "content": user_input}]
+)
         bot.reply_to(message, response["choices"][0]["message"]["content"])
     except Exception as e:
         bot.reply_to(message, "❌ Erreur avec OpenAI, réessaie plus tard !")
