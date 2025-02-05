@@ -68,6 +68,31 @@ def handle_query(call):
                                                "🔥 Plus tu invites, plus tu gagnes ! 🔥")
 
 
+
+
+
+import openai  # Assure-toi d’avoir `openai` installé (pip install openai)
+import os
+from telebot.types import Message
+
+# 🔑 Mets ici ta clé API OpenAI
+OPENAI_API_KEY = "TON_OPENAI_API_KEY"
+openai.api_key = OPENAI_API_KEY
+
+@bot.message_handler(func=lambda message: True)  # Répond à tous les messages
+def ai_response(message: Message):
+    try:
+        user_input = message.text
+        response = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",
+            messages=[{"role": "user", "content": user_input}]
+        )
+        bot.reply_to(message, response["choices"][0]["message"]["content"])
+    except Exception as e:
+        bot.reply_to(message, "❌ Erreur avec l'IA, réessaie plus tard !")
+        print(e)  # Debug
+
+
 # 📌 Lancer le bot en continu
 print("✅ DeepTrade Bot en ligne !")
 bot.polling()
