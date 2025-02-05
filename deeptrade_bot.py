@@ -92,11 +92,21 @@ def handle_query(call):
 def ai_response(message):
     try:
         user_input = message.text
-        response = openai.ChatCompletion.create(
+        client = openai.OpenAI()
+
+@bot.message_handler(func=lambda message: True)
+def ai_response(message):
+    try:
+        user_input = message.text
+        response = client.chat.completions.create(
             model="gpt-3.5-turbo",
             messages=[{"role": "user", "content": user_input}]
         )
-        bot.reply_to(message, response.choices[0].message["content"])
+        bot.reply_to(message, response.choices[0].message.content)
+    except openai.OpenAIError as e:
+        bot.reply_to(message, f"❌ Erreur avec OpenAI : {str(e)}")
+        print(f"Erreur OpenAI : {e}")
+
     except openai.OpenAIError as e:
         bot.reply_to(message, f"❌ Erreur avec OpenAI : {str(e)}")
         print(f"Erreur OpenAI : {e}")
