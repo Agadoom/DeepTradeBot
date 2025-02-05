@@ -14,12 +14,9 @@ bot = telebot.TeleBot(API_TOKEN)
 @bot.message_handler(commands=['start'])
 def send_welcome(message):
     keyboard = InlineKeyboardMarkup()
-
-    # Bouton d’accès au DeepTrade Hub
     deeptrade_hub = InlineKeyboardButton("🌐 Accéder à DeepTrade Hub", url="https://deeptrade.bio.link")
     keyboard.add(deeptrade_hub)
 
-    # Autres boutons interactifs
     keyboard.add(
         InlineKeyboardButton("📝 Inscription", callback_data="inscription"),
         InlineKeyboardButton("📌 FAQ", callback_data="faq")
@@ -29,7 +26,6 @@ def send_welcome(message):
         InlineKeyboardButton("📊 Investissements", callback_data="invest")
     )
 
-    # Envoi de l’image de présentation
     with open("deeptrade_hub_banner.png", "rb") as photo:
         bot.send_photo(
             message.chat.id, 
@@ -39,6 +35,7 @@ def send_welcome(message):
                     "Clique sur un bouton ci-dessous pour explorer 👇",
             reply_markup=keyboard
         )
+
 
 # 🎯 **Gestion des réponses des boutons interactifs**
 @bot.callback_query_handler(func=lambda call: True)
