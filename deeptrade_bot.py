@@ -1,10 +1,12 @@
 import telebot
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 import openai
+import os
 
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 # 🔑 Remplace par ton Token API donné par BotFather
-API_TOKEN = "7376769587:AAGGT6n40XaMVk4OP1FpDEQYRyHVJRRgF6c"
-OPENAI_API_KEY = "TON_TOKEN_OPENAI"
+API_TOKEN = os.getenv("7376769587:AAGGT6n40XaMVk4OP1FpDEQYRyHVJRRgF6c")
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
 # Initialise le bot Telegram et OpenAI
 bot = telebot.TeleBot(API_TOKEN)
