@@ -91,6 +91,15 @@ def ai_response(message: Message):
     except Exception as e:
         bot.reply_to(message, "❌ Erreur avec l'IA, réessaie plus tard !")
         print(e)  # Debug
+        
+        
+        
+        
+        
+        @bot.message_handler(commands=['start'])
+def send_welcome(message):
+    print(f"✅ Commande /start reçue de {message.chat.id}")
+    bot.reply_to(message, "🚀 Bienvenue sur DeepTradeBot !")
 
 
 # 📌 Lancer le bot en continu
