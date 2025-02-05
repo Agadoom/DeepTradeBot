@@ -96,7 +96,7 @@ def ai_response(message: Message):
         
         
         
-        @bot.message_handler(commands=['start'])
+       @bot.message_handler(commands=['start'])
 def send_welcome(message):
     print(f"✅ Commande /start reçue de {message.chat.id}")
     bot.reply_to(message, "🚀 Bienvenue sur DeepTradeBot !")
