@@ -1,7 +1,7 @@
 import os
 import telebot
-from openai import OpenAI  # Nouvelle structure OpenAI v1.61.1
 import openai
+from openai import OpenAI  # Nouvelle structure OpenAI v1.61.1
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 
 # 🔑 Chargement des variables d’environnement (Remplace-les par tes vraies valeurs)
@@ -14,7 +14,7 @@ if not API_TOKEN or not OPENAI_API_KEY:
 
 # 🔥 Initialisation des API
 bot = telebot.TeleBot(API_TOKEN)
-openai.api_key = OPENAI_API_KEY
+client = OpenAI(api_key=OPENAI_API_KEY)
 
 # 📌 Commande /start (Message de bienvenue avec boutons)
 @bot.message_handler(commands=['start'])
@@ -92,21 +92,11 @@ def handle_query(call):
 def ai_response(message):
     try:
         user_input = message.text
-        client = openai.OpenAI()
-
-@bot.message_handler(func=lambda message: True)
-def ai_response(message):
-    try:
-        user_input = message.text
         response = client.chat.completions.create(
             model="gpt-3.5-turbo",
             messages=[{"role": "user", "content": user_input}]
         )
         bot.reply_to(message, response.choices[0].message.content)
-    except openai.OpenAIError as e:
-        bot.reply_to(message, f"❌ Erreur avec OpenAI : {str(e)}")
-        print(f"Erreur OpenAI : {e}")
-
     except openai.OpenAIError as e:
         bot.reply_to(message, f"❌ Erreur avec OpenAI : {str(e)}")
         print(f"Erreur OpenAI : {e}")
